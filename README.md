@@ -1,16 +1,59 @@
-# React + Vite
+# Elgamal Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Professional portfolio website for Mohamad Elgamal - Android, Flutter & Backend Developer
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React** - UI library
+- **Tailwind CSS** - Styling
+- **Vite** - Build tool
+- **Lucide React** - Icons
+- **Framer Motion** - Animations
 
-## React Compiler
+## 🛠️ Development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Install dependencies
+npm install
 
-## Expanding the ESLint configuration
+# Run development server
+npm run dev
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Build for production
+npm run build
+```
+
+## 📦 Automatic Deployment to Hostinger
+
+This project uses GitHub Actions to automatically deploy to Hostinger when you push with a specific commit message.
+
+### Setup Instructions:
+
+1. **Add GitHub Secrets** (Go to your repository → Settings → Secrets and variables → Actions):
+   - `FTP_SERVER` - Your Hostinger FTP server (e.g., `ftp.yourdomain.com`)
+   - `FTP_USERNAME` - Your FTP username
+   - `FTP_PASSWORD` - Your FTP password
+
+2. **Deploy to Hostinger**:
+   ```bash
+   git add .
+   git commit -m "upload to hostinger"
+   git push
+   ```
+
+   The GitHub Action will automatically:
+   - Build your project
+   - Deploy to Hostinger via FTP
+   - Update your live website
+
+### Manual Deployment:
+
+If you prefer to deploy manually:
+```bash
+npm run build
+# Upload the contents of the 'dist' folder to your Hostinger public_html directory
+```
+
+## 📝 License
+
+© 2026 Mohamad Elgamal - All rights reserved
