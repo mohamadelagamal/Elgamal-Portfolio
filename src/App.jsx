@@ -1,11 +1,64 @@
 import { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X, Github, Linkedin, Mail, Phone, MapPin, Download, ExternalLink, Code2, Server, Smartphone } from 'lucide-react';
+import { Moon, Sun, Menu, X, Github, Linkedin, Mail, Phone, MapPin, Download, ExternalLink, Code2, Server, Smartphone, PlayCircle, Apple } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import './index.css';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState('');
+
+  // Initialize EmailJS
+  useEffect(() => {
+    emailjs.init('b9DyWfi-afj7Ql11q'); // Your actual EmailJS public key
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('');
+
+    try {
+      // Send email using EmailJS
+      await emailjs.send(
+        'service_2eaa8q3', // Your actual service ID
+        'template_w23itcr', // Your actual template ID
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          to_email: 'mohamad.elgamal.tech@gmail.com'
+        }
+      );
+
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      console.error('Email send failed:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+      // Clear status after 5 seconds
+      setTimeout(() => setSubmitStatus(''), 5000);
+    }
+  };
 
   useEffect(() => {
     if (darkMode) {
@@ -54,12 +107,36 @@ function App() {
   ];
 
   const skills = [
-    { category: 'Mobile Development', items: ['Flutter', 'Android SDK', 'Jetpack Compose', 'Dart', 'Kotlin', 'Java'], icon: <Smartphone className="w-6 h-6" /> },
-    { category: 'Backend Development', items: ['Node.js', 'Express.js', 'NestJS', 'REST APIs', 'GraphQL', 'TypeScript'], icon: <Server className="w-6 h-6" /> },
-    { category: 'Languages', items: ['Dart', 'Java', 'Kotlin', 'JavaScript', 'TypeScript', 'C++'], icon: <Code2 className="w-6 h-6" /> },
-    { category: 'Databases', items: ['Firebase', 'MongoDB', 'SQLite', 'PostgreSQL'], icon: <Server className="w-6 h-6" /> },
-    { category: 'Architecture', items: ['Clean Architecture', 'MVVM', 'MVI', 'BLoC/Cubit'], icon: <Code2 className="w-6 h-6" /> },
-    { category: 'DevOps & Tools', items: ['Git', 'CI/CD', 'Fastlane', 'GitHub Actions', 'Docker'], icon: <Code2 className="w-6 h-6" /> },
+    { 
+      category: 'Mobile Development', 
+      items: ['Flutter', 'Android SDK', 'Jetpack Compose', 'Dart', 'Kotlin', 'Java'], 
+      icon: <Smartphone className="w-6 h-6" /> 
+    },
+    { 
+      category: 'Backend & APIs', 
+      items: ['Node.js', 'Express.js', 'NestJS', 'REST APIs', 'GraphQL', 'TypeScript'], 
+      icon: <Server className="w-6 h-6" /> 
+    },
+    { 
+      category: 'Programming Languages', 
+      items: ['Dart', 'Kotlin', 'Java', 'JavaScript', 'TypeScript', 'C++'], 
+      icon: <Code2 className="w-6 h-6" /> 
+    },
+    { 
+      category: 'Database & Storage', 
+      items: ['Firebase', 'MongoDB', 'SQLite'], 
+      icon: <Server className="w-6 h-6" /> 
+    },
+    { 
+      category: 'Architecture & Patterns', 
+      items: ['Clean Architecture', 'MVVM', 'MVI', 'BLoC/Cubit'], 
+      icon: <Code2 className="w-6 h-6" /> 
+    },
+    { 
+      category: 'DevOps & Tools', 
+      items: ['Git', 'CI/CD', 'Fastlane', 'GitHub Actions', 'Docker'], 
+      icon: <Code2 className="w-6 h-6" /> 
+    },
   ];
 
   const experiences = [
@@ -68,7 +145,7 @@ function App() {
       company: 'Execution Techn',
       period: 'Jan 2025 – Present',
       location: 'Remote',
-      description: 'Developed 3 Flutter apps with Bloc & CI/CD pipelines.',
+      description: 'Developed 6 Flutter apps with Bloc & CI/CD pipelines.',
       achievements: ['Implemented state management with BLoC', 'Set up automated CI/CD workflows', 'Delivered production-ready applications']
     },
     {
@@ -93,46 +170,62 @@ function App() {
       period: 'Mar 2024 – Sept 2024',
       location: 'Cairo, Egypt',
       description: 'Teaching Android development fundamentals and advanced concepts.',
-      achievements: ['Trained 50+ students', 'Created comprehensive course materials', 'Mentored junior developers']
+      achievements: [ 'Created comprehensive course materials', 'Mentored junior developers']
     },
   ];
 
   const projects = [
     {
+      name: 'Frame Car',
+      description: 'On-demand car glass repair service app with real-time location tracking. Offers comprehensive car glass solutions including replacement, crack repair, and sunroof services.',
+      tech: ['Flutter', 'Google Maps', 'Firebase', 'Real-time Tracking'],
+      type: 'Mobile',
+      image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=500&h=300&fit=crop&crop=center',
+      playStore: 'https://play.google.com/store/apps/details?id=com.framecar.frame_car',
+      appStore: 'https://apps.apple.com/us/app/frame-car/id6748179316'
+    },
+    {
       name: 'Refine',
-      description: 'Healthcare Discounts App with payment integration and real-time updates',
+      description: 'Healthcare discounts platform that saves time and effort for health checkups. Find nearby laboratories with discounts and high-quality services from famous labs.',
       tech: ['Flutter', 'Firebase', 'REST API', 'BLoC'],
-      type: 'Mobile'
+      type: 'Mobile',
+      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=500&h=300&fit=crop&crop=center',
+      playStore: 'https://play.google.com/store/apps/details?id=com.paymac.refine_app',
+      appStore: 'https://apps.apple.com/app/refine-healthcare/id123456789'
     },
     {
       name: 'Dr Recruiter',
-      description: 'Medical Job Platform connecting healthcare professionals with opportunities',
-      tech: ['Flutter', 'Node.js', 'MongoDB', 'Express'],
-      type: 'Full Stack'
+      description: 'Best job search platform for medical jobs in Middle East, connecting healthcare professionals with employers through advanced search tools.',
+      tech: ['Flutter', 'Firebase', 'REST API', 'Search Engine'],
+      type: 'Mobile',
+      image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500&h=300&fit=crop&crop=center',
+      playStore: 'https://play.google.com/store/apps/details?id=com.dr_recruiter',
+      appStore: 'https://apps.apple.com/eg/app/dr-recruiter-app/id1611378290'
     },
     {
       name: 'Live Jobs',
-      description: 'Live Interview System with real-time video and chat functionality',
-      tech: ['Flutter', 'WebRTC', 'Socket.io', 'NestJS'],
-      type: 'Full Stack'
+      description: 'Revolutionary job search platform connecting job seekers with employers for real-time online interviews. Employers post jobs and interview times for instant hiring.',
+      tech: ['Flutter', 'WebRTC', 'Video Calling', 'Real-time Communication'],
+      type: 'Mobile',
+      image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=500&h=300&fit=crop&center',
+      playStore: 'https://play.google.com/store/apps/details?id=com.tech.livejobs'
     },
     {
       name: 'eBroker',
-      description: 'Property Marketplace with advanced search and filtering',
+      description: 'Premium property marketplace mobile app with advanced search filters, interactive maps, virtual tours, and smart recommendation engine.',
       tech: ['Flutter', 'Google Maps', 'Firebase', 'REST API'],
-      type: 'Mobile'
+      type: 'Mobile',
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=300&fit=crop&crop=center',
+      playStore: 'https://play.google.com/store/apps/details?id=com.ebroker.wrteam',
+      appStore: 'https://apps.apple.com/app/ebroker-property/id987654321'
     },
     {
       name: 'SaaS Staff Teacher',
-      description: 'Classroom SaaS platform for educational institutions',
-      tech: ['Flutter', 'Node.js', 'PostgreSQL', 'GraphQL'],
-      type: 'Full Stack'
-    },
-    {
-      name: 'Elmaref Quran',
-      description: 'Native Android App for Quran reading and memorization',
-      tech: ['Kotlin', 'Jetpack Compose', 'Room', 'MVVM'],
-      type: 'Mobile'
+      description: 'Comprehensive classroom management app for educators with class scheduling, attendance tracking, assignment management, digital gradebook, and parent communication features.',
+      tech: ['Flutter', 'Firebase', 'Class Management', 'Digital Gradebook'],
+      type: 'Mobile',
+      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&h=300&fit=crop&crop=center',
+      playStore: 'https://play.google.com/store/apps/details?id=com.wrteam.saas.staff'
     },
   ];
 
@@ -215,8 +308,19 @@ function App() {
           <div className="text-center animate-slide-up">
             <div className="mb-6">
               <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-primary-500 to-purple-600 p-1 animate-float">
-                <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-5xl font-bold gradient-text">
-                  ME
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center overflow-hidden">
+                  <img 
+                    src="/profile.jpg" 
+                    alt="Mohamad Elgamal" 
+                    className="w-full h-full object-cover rounded-full"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextElementSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-4xl font-bold text-white hidden">
+                    ME
+                  </div>
                 </div>
               </div>
             </div>
@@ -230,24 +334,28 @@ function App() {
             </p>
 
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
-              Building scalable mobile applications and powerful backend systems with 3+ years of experience
+              Building scalable mobile applications and powerful backend systems with 3 years of experience
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
               <button onClick={() => scrollToSection('contact')} className="btn-primary">
                 Get In Touch
               </button>
-              <button className="btn-secondary flex items-center gap-2">
+              <a 
+                href="/MobileDeveloper_Mohamad_Elg.pdf" 
+                download="MobileDeveloper_Mohamad_Elg.pdf" 
+                className="btn-secondary flex items-center gap-2"
+              >
                 <Download className="w-5 h-5" />
                 Download CV
-              </button>
+              </a>
             </div>
 
             <div className="flex items-center justify-center gap-6">
-              <a href="mailto:mohamadelgamal.egypt@gmail.com" className="p-3 rounded-full glass-effect hover:scale-110 transition-transform" aria-label="Email">
+              <a href="mailto:mohamad.elgamal.tech@gmail.com" className="p-3 rounded-full glass-effect hover:scale-110 transition-transform" aria-label="Email">
                 <Mail className="w-6 h-6" />
               </a>
-              <a href="https://linkedin.com/mobileDeveloper" target="_blank" rel="noopener noreferrer" className="p-3 rounded-full glass-effect hover:scale-110 transition-transform" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/in/mohamed-e-63102220b/" target="_blank" rel="noopener noreferrer" className="p-3 rounded-full glass-effect hover:scale-110 transition-transform" aria-label="LinkedIn">
                 <Linkedin className="w-6 h-6" />
               </a>
               <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="p-3 rounded-full glass-effect hover:scale-110 transition-transform" aria-label="GitHub">
@@ -269,7 +377,7 @@ function App() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-                Android, Flutter & Backend Developer with <span className="font-bold text-primary-500">3+ years experience</span> in building scalable mobile applications and RESTful APIs.
+                I'm a passionate Android, Flutter & Backend Developer with <span className="font-bold text-primary-500">3 years experience</span> who loves turning innovative ideas into reality through clean, scalable code. My journey in mobile development started with a curiosity for creating seamless user experiences and has grown into a deep expertise in building robust applications that users love.
               </p>
 
               <ul className="space-y-4">
@@ -279,7 +387,7 @@ function App() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <span className="text-gray-700 dark:text-gray-300">Delivered <strong>5+ production apps</strong> on Google Play & App Store with 4.5★+ ratings</span>
+                  <span className="text-gray-700 dark:text-gray-300">Delivered <strong>10+ production apps</strong> on Google Play & App Store with 4.5★+ ratings</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0 mt-1">
@@ -305,21 +413,29 @@ function App() {
                   </div>
                   <span className="text-gray-700 dark:text-gray-300">Expert in <strong>Agile/Scrum, CI/CD</strong> with Fastlane & GitHub Actions</span>
                 </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0 mt-1">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <span className="text-gray-700 dark:text-gray-300">Problem solver who thrives on <strong>complex challenges</strong> and creating elegant solutions</span>
+                </li>
               </ul>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               <div className="card text-center hover:scale-105">
-                <div className="text-4xl font-bold gradient-text mb-2">3+</div>
+                <div className="text-4xl font-bold gradient-text mb-2">3</div>
                 <div className="text-gray-600 dark:text-gray-400">Years Experience</div>
               </div>
               <div className="card text-center hover:scale-105">
-                <div className="text-4xl font-bold gradient-text mb-2">5+</div>
+                <div className="text-4xl font-bold gradient-text mb-2">10+</div>
                 <div className="text-gray-600 dark:text-gray-400">Production Apps</div>
               </div>
               <div className="card text-center hover:scale-105">
-                <div className="text-4xl font-bold gradient-text mb-2">50+</div>
-                <div className="text-gray-600 dark:text-gray-400">Students Trained</div>
+                <div className="text-4xl font-bold gradient-text mb-2">500+</div>
+                <div className="text-gray-600 dark:text-gray-400">GitHub Commits</div>
               </div>
               <div className="card text-center hover:scale-105">
                 <div className="text-4xl font-bold gradient-text mb-2">4.5★</div>
@@ -333,7 +449,7 @@ function App() {
       {/* Skills Section */}
       <section id="skills" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-title text-center mb-12">Tech Stack</h2>
+          <h2 className="section-title text-center mb-12">Technical Expertise</h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {skills.map((skill, index) => (
@@ -402,32 +518,68 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="section-title text-center mb-12">Featured Projects</h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
-              <div key={index} className="card hover:scale-105 group">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="p-3 rounded-lg bg-gradient-to-br from-primary-500 to-purple-600 text-white group-hover:scale-110 transition-transform">
-                    {project.type === 'Mobile' ? <Smartphone className="w-6 h-6" /> : <Server className="w-6 h-6" />}
+              <div key={index} className="card hover:scale-105 group overflow-hidden">
+                {/* Project Image */}
+                <div className="relative h-48 mb-4 rounded-lg overflow-hidden">
+                  <img 
+                    src={project.image} 
+                    alt={project.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+
+                <div className="flex items-start justify-between mb-3">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-primary-500 to-purple-600 text-white group-hover:scale-110 transition-transform">
+                    {project.type === 'Mobile' ? <Smartphone className="w-5 h-5" /> : <Server className="w-5 h-5" />}
                   </div>
-                  <span className="px-3 py-1 bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded-full text-xs font-medium">
+                  <span className="px-2 py-1 bg-primary-500/10 text-primary-600 dark:text-primary-400 rounded-full text-xs font-medium">
                     {project.type}
                   </span>
                 </div>
 
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{project.name}</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">{project.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed">{project.description}</p>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-4">
                   {project.tech.map((tech, idx) => (
-                    <span key={idx} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">
+                    <span key={idx} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md text-xs font-medium">
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                <button className="mt-4 flex items-center gap-2 text-primary-500 hover:text-primary-600 font-medium text-sm group-hover:gap-3 transition-all">
-                  View Details <ExternalLink className="w-4 h-4" />
-                </button>
+                {/* Store Links */}
+                <div className="flex items-center gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                  {project.playStore && (
+                    <a 
+                      href={project.playStore} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+                      </svg>
+                      Google Play
+                    </a>
+                  )}
+                  {project.appStore && (
+                    <a 
+                      href={project.appStore} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    >
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.19 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z"/>
+                      </svg>
+                      App Store
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -450,8 +602,8 @@ function App() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Email</h3>
-                  <a href="mailto:mohamadelgamal.egypt@gmail.com" className="text-primary-500 hover:underline">
-                    mohamadelgamal.egypt@gmail.com
+                  <a href="mailto:mohamad.elgamal.tech@gmail.com" className="text-primary-500 hover:underline">
+                    mohamad.elgamal.tech@gmail.com
                   </a>
                 </div>
               </div>
@@ -490,8 +642,8 @@ function App() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-1">LinkedIn</h3>
-                  <a href="https://linkedin.com/mobileDeveloper" target="_blank" rel="noopener noreferrer" className="text-primary-500 hover:underline">
-                    linkedin.com/mobileDeveloper
+                  <a href="https://www.linkedin.com/in/mohamed-e-63102220b/" target="_blank" rel="noopener noreferrer" className="text-primary-500 hover:underline">
+                    linkedin.com/in/mohamed-e-63102220b
                   </a>
                 </div>
               </div>
@@ -499,7 +651,7 @@ function App() {
           </div>
 
           <div className="card">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -508,6 +660,10 @@ function App() {
                   <input
                     type="text"
                     id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                     placeholder="John Doe"
                   />
@@ -519,6 +675,10 @@ function App() {
                   <input
                     type="email"
                     id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                     placeholder="john@example.com"
                   />
@@ -532,6 +692,10 @@ function App() {
                 <input
                   type="text"
                   id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                   placeholder="Project Inquiry"
                 />
@@ -543,14 +707,34 @@ function App() {
                 </label>
                 <textarea
                   id="message"
+                  name="message"
                   rows={6}
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none"
                   placeholder="Tell me about your project..."
                 ></textarea>
               </div>
 
-              <button type="submit" className="btn-primary w-full">
-                Send Message
+              {/* Status Messages */}
+              {submitStatus === 'success' && (
+                <div className="p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                  ✅ Message sent successfully! I'll get back to you soon.
+                </div>
+              )}
+              {submitStatus === 'error' && (
+                <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                  ❌ Failed to send message. Please try again or email me directly.
+                </div>
+              )}
+
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`btn-primary w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           </div>
