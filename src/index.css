@@ -4,6 +4,39 @@
 @tailwind components;
 @tailwind utilities;
 
+/* RTL Support for Arabic */
+[dir="rtl"] {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+[dir="rtl"] .ml-1 {
+  margin-left: 0;
+  margin-right: 0.25rem;
+}
+
+[dir="rtl"] .ml-2 {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .mr-1 {
+  margin-right: 0;
+  margin-left: 0.25rem;
+}
+
+[dir="rtl"] .mr-2 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
 @layer base {
   body {
     @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans;

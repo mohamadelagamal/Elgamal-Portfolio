@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X, Github, Linkedin, Mail, Phone, MapPin, Download, ExternalLink, Code2, Server, Smartphone, PlayCircle, Apple } from 'lucide-react';
+import { Moon, Sun, Menu, X, Github, Linkedin, Mail, Phone, MapPin, Download, ExternalLink, Code2, Server, Smartphone, PlayCircle, Apple, Globe } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import './index.css';
 
@@ -7,6 +7,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [language, setLanguage] = useState('en');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,10 +17,160 @@ function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
 
+  // Translations object
+  const translations = {
+    en: {
+      nav: {
+        home: 'Home',
+        about: 'About',
+        skills: 'Skills',
+        experience: 'Experience',
+        projects: 'Projects',
+        contact: 'Contact'
+      },
+      hero: {
+        greeting: 'Hi, I\'m',
+        name: 'Mohamad Elgamal',
+        title: 'Android, Flutter & Backend Developer',
+        subtitle: 'Building scalable mobile applications and powerful backend systems with 3 years of experience',
+        getInTouch: 'Get In Touch',
+        downloadCV: 'Download CV'
+      },
+      about: {
+        title: 'About Me',
+        description: 'I\'m a passionate Android, Flutter & Backend Developer with 3 years experience who loves turning innovative ideas into reality through clean, scalable code. My journey in mobile development started with a curiosity for creating seamless user experiences and has grown into a deep expertise in building robust applications that users love.',
+        apps: 'Delivered 10+ production apps on Google Play & App Store with 4.5★+ ratings',
+        tech: 'Strong experience with Flutter, Kotlin, Java, and Backend APIs using Node.js, Express.js & NestJS',
+        architecture: 'Clean Architecture advocate with BLoC/Cubit & MVVM',
+        devops: 'Expert in Agile/Scrum, CI/CD with Fastlane & GitHub Actions',
+        problem: 'Problem solver who thrives on complex challenges and creating elegant solutions',
+        yearsExp: 'Years Experience',
+        productionApps: 'Production Apps',
+        githubCommits: 'GitHub Commits',
+        avgRating: 'Average Rating'
+      },
+      skills: {
+        title: 'Technical Expertise'
+      },
+      experience: {
+        title: 'Experience'
+      },
+      projects: {
+        title: 'Featured Projects',
+        googlePlay: 'Google Play',
+        appStore: 'App Store'
+      },
+      contact: {
+        title: 'Get In Touch',
+        subtitle: 'Let\'s build scalable mobile apps and powerful backend systems together.',
+        email: 'Email',
+        phone: 'Phone',
+        location: 'Location',
+        locationValue: 'Cairo, Egypt',
+        linkedin: 'LinkedIn',
+        form: {
+          name: 'Your Name',
+          namePlace: 'John Doe',
+          email: 'Your Email',
+          emailPlace: 'john@example.com',
+          subject: 'Subject',
+          subjectPlace: 'Project Inquiry',
+          message: 'Message',
+          messagePlac: 'Tell me about your project...',
+          sending: 'Sending...',
+          send: 'Send Message',
+          success: '✅ Message sent successfully! I\'ll get back to you soon.',
+          error: '❌ Failed to send message. Please try again or email me directly.'
+        }
+      },
+      footer: {
+        rights: '© 2026 Mohamad Elgamal – Android, Flutter & Backend Developer',
+        tech: 'Built with React + Tailwind CSS'
+      }
+    },
+    ar: {
+      nav: {
+        home: 'الرئيسية',
+        about: 'عني',
+        skills: 'المهارات',
+        experience: 'الخبرة',
+        projects: 'المشاريع',
+        contact: 'اتصل بي'
+      },
+      hero: {
+        greeting: 'مرحباً، أنا',
+        name: 'محمد الجمال',
+        title: 'مطور أندرويد وفلاتر وباك إند',
+        subtitle: 'بناء تطبيقات محمولة قابلة للتطوير وأنظمة باك إند قوية مع 3 سنوات من الخبرة',
+        getInTouch: 'تواصل معي',
+        downloadCV: 'تحميل السيرة الذاتية'
+      },
+      about: {
+        title: 'عني',
+        description: 'أنا مطور شغوف بالأندرويد والفلاتر والباك إند مع 3 سنوات خبرة أحب تحويل الأفكار المبتكرة إلى واقع من خلال كود نظيف وقابل للتطوير. بدأت رحلتي في تطوير الأجهزة المحمولة بفضول لإنشاء تجارب مستخدم سلسة ونمت لتصبح خبرة عميقة في بناء تطبيقات قوية يحبها المستخدمون.',
+        apps: 'تم تطوير أكثر من 10 تطبيقات في متاجر Google Play و App Store بتقييم 4.5★+',
+        tech: 'خبرة قوية في Flutter وKotlin وJava وواجهات برمجة التطبيقات الخلفية باستخدام Node.js وExpress.js وNestJS',
+        architecture: 'مدافع عن Clean Architecture مع BLoC/Cubit و MVVM',
+        devops: 'خبير في Agile/Scrum وCI/CD مع Fastlane وGitHub Actions',
+        problem: 'حلال مشاكل يزدهر في التحديات المعقدة وإنشاء حلول أنيقة',
+        yearsExp: 'سنوات الخبرة',
+        productionApps: 'تطبيقات الإنتاج',
+        githubCommits: 'مساهمات GitHub',
+        avgRating: 'متوسط التقييم'
+      },
+      skills: {
+        title: 'الخبرة التقنية'
+      },
+      experience: {
+        title: 'الخبرة العملية'
+      },
+      projects: {
+        title: 'المشاريع المميزة',
+        googlePlay: 'جوجل بلاي',
+        appStore: 'آب ستور'
+      },
+      contact: {
+        title: 'تواصل معي',
+        subtitle: 'لنبني معاً تطبيقات محمولة قابلة للتطوير وأنظمة باك إند قوية.',
+        email: 'البريد الإلكتروني',
+        phone: 'الهاتف',
+        location: 'الموقع',
+        locationValue: 'القاهرة، مصر',
+        linkedin: 'لينكد إن',
+        form: {
+          name: 'اسمك',
+          namePlace: 'أحمد محمد',
+          email: 'بريدك الإلكتروني',
+          emailPlace: 'ahmed@example.com',
+          subject: 'الموضوع',
+          subjectPlace: 'استفسار عن مشروع',
+          message: 'الرسالة',
+          messagePlac: 'أخبرني عن مشروعك...',
+          sending: 'جارٍ الإرسال...',
+          send: 'إرسال الرسالة',
+          success: '✅ تم إرسال الرسالة بنجاح! سأرد عليك قريباً.',
+          error: '❌ فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى أو راسلني مباشرة.'
+        }
+      },
+      footer: {
+        rights: '© 2026 محمد الجمال – مطور أندرويد وفلاتر وباك إند',
+        tech: 'تم البناء باستخدام React + Tailwind CSS'
+      }
+    }
+  };
+
+  const t = translations[language];
+
   // Initialize EmailJS
   useEffect(() => {
     emailjs.init('b9DyWfi-afj7Ql11q'); // Your actual EmailJS public key
   }, []);
+
+  // Set document direction and language
+  useEffect(() => {
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,6 +220,17 @@ function App() {
   }, [darkMode]);
 
   useEffect(() => {
+    // Handle RTL direction for Arabic
+    if (language === 'ar') {
+      document.documentElement.setAttribute('dir', 'rtl');
+      document.documentElement.setAttribute('lang', 'ar');
+    } else {
+      document.documentElement.setAttribute('dir', 'ltr');
+      document.documentElement.setAttribute('lang', 'en');
+    }
+  }, [language]);
+
+  useEffect(() => {
     const handleScroll = () => {
       const sections = ['home', 'about', 'skills', 'experience', 'projects', 'contact'];
       const scrollPosition = window.scrollY + 100;
@@ -97,13 +259,23 @@ function App() {
     }
   };
 
+  const toggleLanguage = () => {
+    setLanguage(prev => {
+      const newLanguage = prev === 'en' ? 'ar' : 'en';
+      // Update document direction for RTL support
+      document.documentElement.dir = newLanguage === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = newLanguage;
+      return newLanguage;
+    });
+  };
+
   const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About' },
-    { id: 'skills', label: 'Skills' },
-    { id: 'experience', label: 'Experience' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'contact', label: 'Contact' },
+    { id: 'home', label: t.nav.home },
+    { id: 'about', label: t.nav.about },
+    { id: 'skills', label: t.nav.skills },
+    { id: 'experience', label: t.nav.experience },
+    { id: 'projects', label: t.nav.projects },
+    { id: 'contact', label: t.nav.contact },
   ];
 
   const skills = [
@@ -246,10 +418,11 @@ function App() {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${activeSection === item.id
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                      activeSection === item.id
                         ? 'text-primary-500 bg-primary-500/10'
                         : 'text-gray-700 dark:text-gray-300 hover:text-primary-500 hover:bg-primary-500/5'
-                      }`}
+                    }`}
                   >
                     {item.label}
                   </button>
@@ -257,7 +430,17 @@ function App() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 relative">
+              {/* Language Toggle */}
+              <button
+                onClick={toggleLanguage}
+                className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-110 group"
+                aria-label="Toggle Language"
+              >
+                <Globe className="w-5 h-5 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
+              </button>
+
+              {/* Dark Mode Toggle */}
               <button
                 onClick={() => setDarkMode(!darkMode)}
                 className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
